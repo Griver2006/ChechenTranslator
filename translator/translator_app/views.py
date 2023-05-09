@@ -15,7 +15,7 @@ def translate(request):
             word_translate = Word.objects.filter(word__iexact=input_text)[0].word_translate
         except IndexError:
             try:
-                word_translate = Word.objects.filter(word_translate__iexact=input_text)[0].word_translate
+                word_translate = Word.objects.filter(word_translate__iexact=input_text)[0].word
             except IndexError:
                 word_translate = ''
         return JsonResponse({"translated_text": word_translate})
