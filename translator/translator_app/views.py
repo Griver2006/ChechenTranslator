@@ -5,8 +5,6 @@ from .models import *
 
 
 def main(request):
-    if request.method == 'POST':
-        print(request.POST.get('input_word', ''))
     return render(request, 'translator_app/main.html', {'title': 'Главная страница'})
 
 
