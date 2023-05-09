@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Переводчик</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			text-align: center;
+		}
+		main {
+			margin: 0 auto;
+		}
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 50px 20px;
+		}
+		label {
+			font-size: 18px;
+			margin-bottom: 10px;
+			display: block;
+		}
+		input[type="text"] {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			width: 100%;
+			margin-bottom: 20px;
+		}
+		button {
+			background-color: #333;
+			color: #fff;
+			padding: 10px 20px;
+			font-size: 18px;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		button:hover {
+			background-color: #555;
+		}
+		textarea {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			width: 100%;
+			height: 200px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Переводчик</h1>
+	</header>
+	<main>
+		<form id="translate-form" method="post">
+			{% csrf_token %}
+			<label for="input_word">Введите текст для перевода:</label>
+			<input type="text" id="input_word" name="input_word">
+			<label for="output">Результат перевода:</label>
+			<textarea id="output" readonly name="output"></textarea>
+			<button id="translate" type="submit">Перевести</button>
+		</form>
+	</main>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#translate-form").submit(function(event){
+			event.preventDefault();
+			var inputText = $("#input_word").val();
+			var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+			$.ajax({
+				url: "/translate/",
+				type: "POST",
+				data: {
+					csrfmiddlewaretoken: csrf_token,
+					text: inputText
+				},
+				success: function(data) {
+					if (data.translated_text) {
+						$("#output").val(data.translated_text);
+						$("#output").css("border-color", "");
+					} else {
+						$("#output").val("Перевод не найден");
+						$("#output").css("border-color", "red");
+					}
+				}
+			});
+		});
+	});
+	</script>
+</body>
+</html>
